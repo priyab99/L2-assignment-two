@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { UserServices } from "./user.service";
 import userValidationSchema from "./user.validation";
@@ -15,13 +16,12 @@ const createUser = async (req: Request, res: Response) => {
       message: "User created successfully!",
       data: result,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error:any) {
 
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: error.errors || "Internal Server Error",
+      message: error.message ||'Something went wrong',
+      data: null
     });
   }
 };
@@ -34,11 +34,10 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: "Users fetched successfully!",
       data: result,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: err.message || "Something went wrong",
       data: null,
     });
   }
@@ -53,18 +52,37 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: "User fetched successfully!",
       data: result,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: err.message || "Something went wrong",
       data: null,
     });
   }
 };
 
+const deleteSingleUser = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const result = await UserServices.deleteSingleUserFromDB(userId); // Add parentheses here
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully!",
+        data: result,
+      });
+    } catch (err: any) {
+      res.status(500).json({
+        success: false,
+        message: err.message || "Something went wrong",
+        data: null,
+      });
+    }
+};
+
+
 export const UserControllers = {
   createUser,
   getAllUsers,
   getSingleUser,
+  deleteSingleUser
 };

@@ -2,7 +2,7 @@ import { Model} from "mongoose";
 
 
 
-export type User= {
+export type TUser= {
   "userId": "number",
   "username": "string",
   "password": "string",
@@ -26,10 +26,14 @@ export type User= {
     productName: "string",
     price: "number",
     quantity: "number"
-  ];
+  ],
+  "isDeleted": "boolean";
 }
 
+
+
 //for creating static
-export interface UserModelOld extends Model<User>{
-  isUserExists(userId: number): Promise<User| null>
+export interface UserModel extends Model<TUser>{
+  // eslint-disable-next-line no-unused-vars
+  isUserExists(userId: number): Promise<TUser| null>
 }

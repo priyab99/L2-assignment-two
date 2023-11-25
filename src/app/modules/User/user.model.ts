@@ -1,8 +1,10 @@
 import { Schema, model } from 'mongoose';
-import { User, UserModelOld} from './user.interface';
+import { TUser, UserModel} from './user.interface';
+import bcrypt from 'bcrypt'
+import config from '../../config';
 
 
-const userSchema=new Schema<User, UserModelOld>({
+const userSchema=new Schema<TUser, UserModel>({
 
     userId:{type: Number, required: true},
 
@@ -35,13 +37,57 @@ const userSchema=new Schema<User, UserModelOld>({
             price: {type: Number},
             quantity: {type: Number}
         }
-    ]
+    ],
+    isDeleted: {
+        type: Boolean,
+        default: false,
+      },
 })
+
+//pre save middleware
+userSchema.pre('save',async function(next){
+    //console.log(this, 'pre hook: we will save data');
+    //hashing password
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user=this;
+        //const hashedPassword= bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
+        //user.password=hashedPassword;
+        user.password=await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
+        next();
+    
+})
+    
+//})
+
+//post save middleware
+
+userSchema.post('save',function(doc,next){
+   // console.log(this, 'post hook: we saved data');
+   //const user=this;
+   //bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds))
+   doc.password='';
+   next();
+})
+
+userSchema.pre('find', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+  });
+  
+  userSchema.pre('findOne', function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+  });
+  
+  userSchema.pre('aggregate', function (next) {
+    this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+    next();
+  });
 
 //creating a custom static method
 userSchema.statics.isUserExists = async function (userId: number) {
-    const existingUser = await this.findOne({ userId });
+    const existingUser = await User.findOne({ userId });
     return existingUser;
   };
 
-export const UserModel=model<User>('UserModelOld',userSchema);
+export const User=model<TUser>('UserModel',userSchema);
