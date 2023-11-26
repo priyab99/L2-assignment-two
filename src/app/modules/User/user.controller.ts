@@ -8,13 +8,13 @@ const createUser = async (req: Request, res: Response) => {
     const { user: userData } = req.body;
     // Creating a schema validation using zod
     const zodparsedData = userValidationSchema.parse(userData);
-
+  
     const result = await UserServices.createUserIntoDB(zodparsedData);
-
+     const {password,...userWithoutPassword}= result._doc;
     res.status(200).json({
       success: true,
       message: "User created successfully!",
-      data: result,
+      data: userWithoutPassword,
     });
   } catch (error:any) {
 
@@ -47,10 +47,11 @@ const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await UserServices.getSingleUserFromDB(userId);
+    const {password,...userWithOutPassword}=result._doc;
     res.status(200).json({
       success: true,
       message: "User fetched successfully!",
-      data: result,
+      data: userWithOutPassword,
     });
   } catch (err: any) {
     res.status(500).json({
@@ -88,12 +89,13 @@ const updateSingleUser = async (req: Request, res: Response) => {
     if(typeof userId !== 'number'){
       throw new Error('Invalid userId');
     }
-    const result = await UserServices.updateSingleUserFromDB(userId, zodparsedData); // Add parentheses here
+    const result = await UserServices.updateSingleUserFromDB(userId, zodparsedData); 
+    const {password,...userWithOutPassword}=result._doc;
    // delete result?.password;
     res.status(200).json({
       success: true,
       message: "User updated successfully!",
-      data: result,
+      data: userWithOutPassword,
     });
   } catch (err: any) {
     res.status(500).json({
