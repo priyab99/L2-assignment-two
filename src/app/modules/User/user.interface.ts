@@ -26,8 +26,7 @@ export type TUser= {
     productName: "string",
     price: "number",
     quantity: "number"
-  ],
-  "isDeleted": "boolean";
+  ]
 }
 
 

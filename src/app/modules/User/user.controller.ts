@@ -54,9 +54,9 @@ const getSingleUser = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     res.status(500).json({
-      success: false,
+      success: err.success || false,
       message: err.message || "Something went wrong",
-      data: null,
+      data: err.error || null,
     });
   }
 };
@@ -72,9 +72,9 @@ const deleteSingleUser = async (req: Request, res: Response) => {
       });
     } catch (err: any) {
       res.status(500).json({
-        success: false,
+        success:err.success || false,
         message: err.message || "Something went wrong",
-        data: null,
+        data:err.error || null,
       });
     }
 };

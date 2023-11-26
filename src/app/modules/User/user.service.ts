@@ -10,10 +10,6 @@ const createUserIntoDB=async (user: TUser)=>{
        }
    
    const result= await User.create(user);
-   
-   
-   
-
    return result;
 
 }
@@ -39,7 +35,17 @@ const getSingleUserFromDB= async(userId: number)=>{
 }
 
 const deleteSingleUserFromDB= async(userId: number)=>{
-    const result= await User.updateOne({userId},{isDeleted: true});
+    const result= await User.deleteOne({userId});
+    if(!result || result.deletedCount===0){
+        throw{
+            success: false,
+            message: "User not found",
+            error:{
+                code: 404,
+                description: "User not found!"
+            }
+        };
+    }
     return result;
 }
 

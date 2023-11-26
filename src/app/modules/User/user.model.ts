@@ -6,9 +6,9 @@ import config from '../../config';
 
 const userSchema=new Schema<TUser, UserModel>({
 
-    userId:{type: Number, required: true},
+    userId:{type: Number, required: true,  unique: true},
 
-    username: {type: String},
+    username: {type: String,  unique: true,},
     password: {type: String},
 
     fullName: {
@@ -37,11 +37,7 @@ const userSchema=new Schema<TUser, UserModel>({
             price: {type: Number},
             quantity: {type: Number}
         }
-    ],
-    isDeleted: {
-        type: Boolean,
-        default: false,
-      },
+    ]
 })
 
 //pre save middleware
