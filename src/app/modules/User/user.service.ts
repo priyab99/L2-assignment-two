@@ -46,7 +46,7 @@ const deleteSingleUserFromDB= async(userId: number)=>{
             }
         };
     }
-    return result;
+    return null;
 }
 
 
