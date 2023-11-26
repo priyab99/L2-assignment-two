@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { UserServices } from "./user.service";
@@ -10,11 +12,12 @@ const createUser = async (req: Request, res: Response) => {
     const zodparsedData = userValidationSchema.parse(userData);
 
     const result = await UserServices.createUserIntoDB(zodparsedData);
-    const { password, ...userWithoutPassword } = result._doc;
+    
+   
     res.status(200).json({
       success: true,
       message: "User created successfully!",
-      data: userWithoutPassword,
+      data: result,
     });
   } catch (error: any) {
 
@@ -45,13 +48,13 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const getSingleUser = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const userId = parseInt(req.params.userId)
     const result = await UserServices.getSingleUserFromDB(userId);
-    const { password, ...userWithOutPassword } = result._doc;
+    
     res.status(200).json({
       success: true,
       message: "User fetched successfully!",
-      data: userWithOutPassword,
+      data: result,
     });
   } catch (err: any) {
     res.status(500).json({
@@ -64,7 +67,7 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const userId = parseInt(req.params.userId)
     const result = await UserServices.deleteSingleUserFromDB(userId); 
     res.status(200).json({
       success: true,
@@ -90,11 +93,11 @@ const updateSingleUser = async (req: Request, res: Response) => {
       throw new Error('Invalid userId');
     }
     const result = await UserServices.updateSingleUserFromDB(userId, zodparsedData);
-    const { password, ...userWithOutPassword } = result._doc;
+    //const { password, ...userWithOutPassword } = result;
     res.status(200).json({
       success: true,
       message: "User updated successfully!",
-      data: userWithOutPassword,
+      data: result,
     });
   } catch (err: any) {
     res.status(500).json({

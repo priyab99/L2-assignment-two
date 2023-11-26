@@ -44,6 +44,7 @@ const userSchema=new Schema<TUser, UserModel>({
 userSchema.pre('save',async function(next){
     //console.log(this, 'pre hook: we will save data');
     //hashing password
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const user=this;
         user.password=await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
         next();
@@ -81,4 +82,4 @@ userSchema.statics.isUserExists = async function (userId: number) {
     return existingUser;
   };
 
-export const User=model<TUser>('UserModel',userSchema);
+export const User=model<TUser, UserModel>('Model',userSchema);
