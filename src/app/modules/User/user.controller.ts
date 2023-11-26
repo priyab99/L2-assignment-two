@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { UserServices } from "./user.service";
-import userValidationSchema from "./user.validation";
+import userValidationSchema, { updateUserSchema } from "./user.validation";
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -79,10 +79,35 @@ const deleteSingleUser = async (req: Request, res: Response) => {
     }
 };
 
+const updateSingleUser = async (req: Request, res: Response) => {
+  try {
+    const  userId  = parseInt(req.params.userId);
+    const updatedUserData=req.body;
+   // console.log(updatedUserData); 
+    const zodparsedData= updateUserSchema.parse(updatedUserData)
+    if(typeof userId !== 'number'){
+      throw new Error('Invalid userId');
+    }
+    const result = await UserServices.updateSingleUserFromDB(userId, zodparsedData); // Add parentheses here
+   // delete result?.password;
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success:err.success || false,
+      message: err.message || "Something went wrong",
+      data:err.error || null,
+    });
+  }
+};
 
 export const UserControllers = {
   createUser,
   getAllUsers,
   getSingleUser,
-  deleteSingleUser
+  deleteSingleUser,
+  updateSingleUser
 };

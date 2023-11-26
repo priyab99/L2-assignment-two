@@ -1,3 +1,4 @@
+
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
@@ -48,11 +49,29 @@ const deleteSingleUserFromDB= async(userId: number)=>{
     }
     return null;
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateSingleUserFromDB= async(userId: number, updatedData: any)=>{
+    const result=await User.findOneAndUpdate({userId}, { $set: updatedData },{new: true})
+
+    if(!result){
+        throw{
+            success: false,
+            message: "User not found",
+            error:{
+                code: 404,
+                description: "User not found!"
+            }
+        };
+    }
+    return result;
+   
+}
 
 
 export const UserServices={
     createUserIntoDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
-    deleteSingleUserFromDB
+    deleteSingleUserFromDB,
+    updateSingleUserFromDB
 }
