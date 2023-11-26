@@ -8,19 +8,19 @@ const createUser = async (req: Request, res: Response) => {
     const { user: userData } = req.body;
     // Creating a schema validation using zod
     const zodparsedData = userValidationSchema.parse(userData);
-  
+
     const result = await UserServices.createUserIntoDB(zodparsedData);
-     const {password,...userWithoutPassword}= result._doc;
+    const { password, ...userWithoutPassword } = result._doc;
     res.status(200).json({
       success: true,
       message: "User created successfully!",
       data: userWithoutPassword,
     });
-  } catch (error:any) {
+  } catch (error: any) {
 
     res.status(500).json({
       success: false,
-      message: error.message ||'Something went wrong',
+      message: error.message || 'Something went wrong',
       data: null
     });
   }
@@ -47,7 +47,7 @@ const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await UserServices.getSingleUserFromDB(userId);
-    const {password,...userWithOutPassword}=result._doc;
+    const { password, ...userWithOutPassword } = result._doc;
     res.status(200).json({
       success: true,
       message: "User fetched successfully!",
@@ -63,35 +63,34 @@ const getSingleUser = async (req: Request, res: Response) => {
 };
 
 const deleteSingleUser = async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const result = await UserServices.deleteSingleUserFromDB(userId); // Add parentheses here
-      res.status(200).json({
-        success: true,
-        message: "User deleted successfully!",
-        data: result,
-      });
-    } catch (err: any) {
-      res.status(500).json({
-        success:err.success || false,
-        message: err.message || "Something went wrong",
-        data:err.error || null,
-      });
-    }
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.deleteSingleUserFromDB(userId); 
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully!",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: err.success || false,
+      message: err.message || "Something went wrong",
+      data: err.error || null,
+    });
+  }
 };
 
 const updateSingleUser = async (req: Request, res: Response) => {
   try {
-    const  userId  = parseInt(req.params.userId);
-    const updatedUserData=req.body;
-   // console.log(updatedUserData); 
-    const zodparsedData= updateUserSchema.parse(updatedUserData)
-    if(typeof userId !== 'number'){
+    const userId = parseInt(req.params.userId);
+    const updatedUserData = req.body;
+    // console.log(updatedUserData); 
+    const zodparsedData = updateUserSchema.parse(updatedUserData)
+    if (typeof userId !== 'number') {
       throw new Error('Invalid userId');
     }
-    const result = await UserServices.updateSingleUserFromDB(userId, zodparsedData); 
-    const {password,...userWithOutPassword}=result._doc;
-   // delete result?.password;
+    const result = await UserServices.updateSingleUserFromDB(userId, zodparsedData);
+    const { password, ...userWithOutPassword } = result._doc;
     res.status(200).json({
       success: true,
       message: "User updated successfully!",
@@ -99,9 +98,9 @@ const updateSingleUser = async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     res.status(500).json({
-      success:err.success || false,
+      success: err.success || false,
       message: err.message || "Something went wrong",
-      data:err.error || null,
+      data: err.error || null,
     });
   }
 };

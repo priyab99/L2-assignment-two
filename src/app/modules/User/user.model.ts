@@ -44,23 +44,18 @@ const userSchema=new Schema<TUser, UserModel>({
 userSchema.pre('save',async function(next){
     //console.log(this, 'pre hook: we will save data');
     //hashing password
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const user=this;
-        //const hashedPassword= bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
-        //user.password=hashedPassword;
         user.password=await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
         next();
     
 })
     
-//})
 
 //post save middleware
 
 userSchema.post('save',function(doc,next){
    // console.log(this, 'post hook: we saved data');
-   //const user=this;
-   //bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds))
+   
    doc.password='';
    next();
 })

@@ -3,7 +3,7 @@ import { UserControllers } from './user.controller'
 
 const router=express.Router()
 
-//will call controller function
+//will call controller functions here
 router.get('/users',UserControllers.getAllUsers);
 
 router.post('/users',UserControllers.createUser);
